@@ -12,8 +12,8 @@ This integration provides automatic application-level network configuration usin
 ## Prerequisites
 If using ACI, this guide assumes a functional Apprenda instance running on ESXi hosts. It also assumes that ACI has been configured for use with the ESXi hosts.
 
-### Recommended ACI Architecture
-![Recommended ACI Architecture](/docs/apic_reference_architecture.png)
+### ACI Reference Architecture
+![ACI Reference Architecture](/docs/aci_reference_architecture.png)
 
 This integration relies on existing Apprenda and L3 Out contracts in the common tenant for communication with Apprenda nodes and resources external to ACI. The default tenant does not need to be created beforehand as it will be created by the integration's CLI.
 
