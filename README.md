@@ -9,6 +9,15 @@ This integration provides automatic application-level network configuration usin
 |Contiv|1.0.3|1.1.2|
 |ACI|2.3|3.0|
 
+### Installation Videos
+[Installation Part 1: ACI Setup](https://youtu.be/QfpvOlhUcFQ)
+
+[Installation Part 2: Contiv Setup](https://youtu.be/hypkXX7zeLM)
+
+[Installation Part 3: Installation](https://youtu.be/MuVIuJDMgQ4)
+
+[Installation Part 4: Contiv Setup](https://youtu.be/-c77MNnPp8I)
+
 ## Prerequisites
 If using ACI, this guide assumes a functional Apprenda instance running on ESXi hosts. It also assumes that ACI has been configured for use with the ESXi hosts.
 
@@ -28,8 +37,8 @@ This integration relies on existing Apprenda and L3 Out contracts in the common 
           disable: false
           provider: custom
       ```
-    * For Contiv without ACI, in order to specifiy that you want to use Contiv as your CNI (instead of Calico/Weave), modify your kismatic-cluster.yaml and change the provider to "contiv" as shown below:
-	  ```
+    * For Contiv without ACI, in order to specify that you want to use Contiv as your CNI (instead of Calico/Weave), modify your kismatic-cluster.yaml and change the provider to "contiv" as shown below:
+	    ```
       add_ons:
         cni:
           disable: false
@@ -39,10 +48,22 @@ This integration relies on existing Apprenda and L3 Out contracts in the common 
    ```
    kismatic install apply
    ```
-4. When using Contiv with ACI, you must install Contiv manually by following the installation steps [here](https://github.com/contiv/install)
+4. For Contiv with ACI, you must install Contiv manually using the steps below
+
+### Contiv Installation
+Contiv with ACI requires an additional NIC. We recommend configuring an additional distributed port group in VMware for this purpose. The port group should be configured for the same VLAN range as the Default-PD physical domain in ACI and also must have forged transmits enabled to accept traffic from Docker containers.
+
+1. Use the following command to install Contiv, replacing the environment specific arguments where applicable:
+	```
+	./install/k8s/install.sh -n <master node IP> -a <APIC url> -u username -p password -l <leaf> -d <physical domain> -e not_specified -m no -w bridge -v <additional interface>
+	```
+2. Use the following command to set the fabric mode and VLAN range, replacing the environment specific arguments where applicable:
+	```
+	netctl global set --fabric-mode aci -b bridge -a flood --vlan-range <physical domain VLAN range>
+	```
 
 ## Initialization
-Note that subnet ranges must match when initializing ACI and Contiv.
+*Subnet ranges must match when initializing ACI and Contiv*
 1. If using ACI, initialize ACI by running the following command from the LM:
    ```
    ContivProxy.CLI.exe InitializeAci ...
@@ -53,6 +74,7 @@ Note that subnet ranges must match when initializing ACI and Contiv.
    ContivProxy.CLI.exe InitializeContiv ...
    ```
    * If using ACI, use the ```-C``` argument to specify the Apprenda and L3 Out contracts in your ACI setup
+   * When complete, use kubectl to scale kube-dns to zero and back to one (this will ensure its deployment to default-group)
 
 ## Installation
 1. Create a domain account for the integration
@@ -66,7 +88,7 @@ Note that subnet ranges must match when initializing ACI and Contiv.
     * This will create and promote the Contiv Proxy application, create all the necessary Custom Properties, and create the Contiv Proxy Bootstrapper (it will also set credentials if specified)
     
 ## Verification
-1. Verifiy that credentials are set by launching the Contiv Proxy UI
+1. Verify that credentials are set by launching the Contiv Proxy UI
 2. Create a new application using the provided connectivity-pod.yaml
 3. Set the component custom property "Apprenda Network" to "Development Team"
 4. Add "0/ICMP" and "3000/TCP" to component custom property "Application Ports"
