@@ -6,8 +6,11 @@ This integration provides automatic application-level network configuration usin
 |-|-|-|
 |Apprenda|7.0|8.0|
 |Kubernetes|1.6.4|1.7.5|
-|Contiv|1.0.3|1.1.2|
+|Contiv|1.0.3|1.1.6|
 |ACI|2.3|3.0|
+
+### Informational Videos
+[Integrated Container Networking Overview](https://youtu.be/1qQ7lj6fIt4)
 
 ### Installation Videos
 [Installation Part 1: ACI Setup](https://youtu.be/QfpvOlhUcFQ)
